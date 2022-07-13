@@ -4,4 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Implementation\" />
+    <Folder Include="Interface\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\domain\domain.csproj" />
+    <ProjectReference Include="..\repository\repository.csproj" />
+  </ItemGroup>
+
 </Project>
