@@ -154,7 +154,26 @@ namespace repository.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("domain.DomainModels.Image", b =>
+            modelBuilder.Entity("domain.DomainModels.OtherProjectImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("OtherProjectImages");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.ProfileImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +184,114 @@ namespace repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("ProfileImages");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("MainImageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UploadedFileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("MainImageId")
+                        .IsUnique()
+                        .HasFilter("[MainImageId] IS NOT NULL");
+
+                    b.HasIndex("UploadedFileId")
+                        .IsUnique()
+                        .HasFilter("[UploadedFileId] IS NOT NULL");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.ProjectImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectImages");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.Software", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LogoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LogoId")
+                        .IsUnique();
+
+                    b.ToTable("Softwares");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.SoftwareImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SoftwareImage");
+                });
+
+            modelBuilder.Entity("domain.DomainModels.UploadedFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UploadedFiles");
                 });
 
             modelBuilder.Entity("domain.Identity.AppUser", b =>
@@ -249,6 +375,39 @@ namespace repository.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("domain.Relations.Like", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("domain.Relations.ProjectSoftware", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SoftwareId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProjectId", "SoftwareId");
+
+                    b.HasIndex("SoftwareId");
+
+                    b.ToTable("ProjectSoftwares");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -300,11 +459,76 @@ namespace repository.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("domain.DomainModels.OtherProjectImage", b =>
+                {
+                    b.HasOne("domain.DomainModels.Project", "Project")
+                        .WithMany("OtherImages")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("domain.DomainModels.Project", b =>
+                {
+                    b.HasOne("domain.Identity.AppUser", "Creator")
+                        .WithMany("Projects")
+                        .HasForeignKey("CreatorId");
+
+                    b.HasOne("domain.DomainModels.ProjectImage", "MainImage")
+                        .WithOne("Project")
+                        .HasForeignKey("domain.DomainModels.Project", "MainImageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("domain.DomainModels.UploadedFile", "UploadedFile")
+                        .WithOne("Project")
+                        .HasForeignKey("domain.DomainModels.Project", "UploadedFileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("domain.DomainModels.Software", b =>
+                {
+                    b.HasOne("domain.DomainModels.SoftwareImage", "Logo")
+                        .WithOne("Software")
+                        .HasForeignKey("domain.DomainModels.Software", "LogoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("domain.Identity.AppUser", b =>
                 {
-                    b.HasOne("domain.DomainModels.Image", "ProfileImage")
+                    b.HasOne("domain.DomainModels.ProfileImage", "ProfileImage")
                         .WithOne("AppUser")
                         .HasForeignKey("domain.Identity.AppUser", "ProfileImageId");
+                });
+
+            modelBuilder.Entity("domain.Relations.Like", b =>
+                {
+                    b.HasOne("domain.DomainModels.Project", "Project")
+                        .WithMany("LikedByUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("domain.Identity.AppUser", "User")
+                        .WithMany("LikedProjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("domain.Relations.ProjectSoftware", b =>
+                {
+                    b.HasOne("domain.DomainModels.Project", "Project")
+                        .WithMany("SoftwaresUsed")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("domain.DomainModels.Software", "Software")
+                        .WithMany("UsedInProjects")
+                        .HasForeignKey("SoftwareId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

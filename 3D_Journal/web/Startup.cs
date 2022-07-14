@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using repository;
 using repository.Implementation;
 using repository.Interface;
+using service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,10 @@ namespace web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+            services.AddScoped(typeof(ISoftwareRepository), typeof(SoftwareRepository));
+            services.AddScoped(typeof(IProjectRepository), typeof(ProjectRepository));
+
+            services.AddTransient<IProjectService, service.Implementation.ProjectService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

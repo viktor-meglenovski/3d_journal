@@ -1,0 +1,120 @@
+﻿@model domain.DomainModels.Project
+@using domain.DomainModels
+<div class="container border border-dark rounded">
+    <h1 class="text-center mt-2">Edit an existing project</h1>
+    <hr />
+    <form method="post" action="/Project/Edit/@Model.Id" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name" class="control-label">Project title</label>
+            <br>
+            <div class="">
+                <input required="required" type="text" name="name" id="name" class="form-control" value="@Model.Name" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">Project Description</label>
+            <br>
+            <div class="">
+                <textarea type="text" required="required" name="description" id="description" class="form-control">@Model.Description</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="price" class="control-label">Price</label>
+            <br>
+            <div class="">
+                <input required="required" type="number" name="price" id="price" class="form-control" value="@Model.Price" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="softwaresUsed" class="control-label">Software used</label>
+            <br>
+            <div class="">
+                <select required="required" type="file" name="softwaresUsed" id="softwaresUsed" class="form-control" multiple="multiple">
+                    @foreach (Software s in ViewBag.Softwares)
+                    {
+                        var sft = Model.SoftwaresUsed.Select(x => x.Software);
+                        @if (sft.Contains(s))
+                        {
+                            <option value="@s.Id" selected>@s.Name</option>
+                        }
+
+                        else
+                        {
+                            <option value="@s.Id">@s.Name</option>
+                        }
+
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="mainImage" class="control-label">Main image</label>
+            <br>
+            <div class="">
+                <input type="file" name="mainImage" id="mainImage" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="otherImages" class="control-label">Other images</label>
+            <br>
+            <div class="">
+                <input type="file" multiple name="otherImages" id="otherImages" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            @foreach (OtherProjectImage i in Model.OtherImages)
+            {
+                <div class="par" style="position:relative; display:inline-block; ">
+                    <img class="@i.Id otherImages" src=@i.ImagePath style="border:1px solid #d3d3d3;border-radius:10%; margin-bottom:5px; width:100px; height:100px;" />
+                    <button type="button" deleteId="@i.Id" class="imageDelete btn btn-danger" style="position: absolute; bottom:5px; right:0px; border-radius: 30%;">X</button>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <label for="uploadedFile" class="control-label">Files</label>
+            <br>
+            <div class="">
+                <input type="file" name="uploadedFile" id="uploadedFile" class="form-control" />
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                <a href="/MyProfile" class="btn btn-danger btn-block btn-lg">Cancel</a>
+            </div>
+            <div class="col-6">
+                <button type="submit" class="btn btn-success btn-block btn-lg mb-3 ">Save Changes</button>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" type="text/css" />
+    <script>
+        $(document).ready(function () {
+            $('#softwaresUsed').multiselect();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".imageDelete").click(function () {
+                var link = $(this);
+                $.ajax({
+                    method: "GET",
+                    url: "/Project/DeleteImage/" + link.attr("deleteId"),
+                    success: function () {
+                        link.parents("div .par").remove().draw();
+                    },
+                    error: function (response) {
+                        console.log("error");
+                    }
+                })
+            });
+        });
+    </script>
+}

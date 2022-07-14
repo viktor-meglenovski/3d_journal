@@ -1,0 +1,147 @@
+﻿@model domain.DomainModels.Project
+@using domain.DomainModels
+@using domain.Relations
+@using Microsoft.AspNetCore.Identity
+<div class="container border border-dark rounded col-6">
+    <div>
+        <div class="text-center mt-1">
+            <h3>@Model.Name</h3>
+            <h5>@Model.TimeStamp</h5>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <img class="thumbnail zoomInImages" style="width:200px; height:200px;" alt="Main image" src="@Model.MainImage.ImagePath" />
+            </div>
+            <div class="col-6">
+                <h5>Description:</h5>
+                <p>@Model.Description</p>
+                <hr/>
+                <h5>Price: $@Model.Price</h5>
+            </div>
+        </div>
+        <hr />
+        <div class="text-center">
+            <h4>Other images:</h4>
+            @foreach (OtherProjectImage i in Model.OtherImages)
+            {
+                <img class="otherImages thumbnail zoomInImages" style="display:inline; width:100px; height:100px;" src=@i.ImagePath />
+            }
+        </div>
+        <hr />
+        <div class="text-center">
+            <h4>Software used:</h4>
+            @foreach (ProjectSoftware s in Model.SoftwaresUsed)
+            {
+                <img class="softwareImages" alt=@s.Software.Name src="@s.Software.Logo.ImagePath" style="width:75px;height:75px;" />
+            }
+        </div>
+        <hr />
+        <div class="row mb-2">
+            <div class="col-9 text-left">
+                @if (Model.CreatorId == ViewBag.UserId)
+                {
+                    <a href="/Project/Edit/@Model.Id" class="btn btn-warning text-white col-4">Edit Project</a>
+                }
+                <a href="/MyProfile/View/@Model.CreatorId" class="btn btn-primary col-4">Back</a>
+            </div>
+            <div class="col-3 text-right">
+                <a id="viewLikes" class="btn btn-danger text-center text-white">Likes: @Model.LikedByUsers.Count </a>
+                @{ 
+                    var likedBy = Model.LikedByUsers.Select(x => x.UserId).ToList();
+                }
+                @{ var likeImg = likedBy.Contains(ViewBag.UserId) ? "/images/heart_full.png" : "/images/heart_empty.png";}
+                <img id="likeImage" style="width:50px;" src=@likeImg />
+            </div>
+        </div>
+    </div>
+</div>
+<table class="viewLikesDiv" style="display:none">
+</table>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#likeImage").hover(function () {
+                $(this).css('cursor', 'pointer');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#likeImage").click(function () {
+                    $.ajax({
+                    type: "GET",
+                    url:"@String.Format(@"/Project/Like/"+ @Model.Id)",
+                    contentType: false,
+                    processData: false,
+                        success: function (results) {
+                            $("#viewLikes").html("Likes: " + results.newCount);
+                            var likeImage = $("#likeImage");
+                            if (likeImage.attr("src").indexOf("full") > 0) {
+                                likeImage.attr("src", "/images/heart_empty.png")
+                            }
+                            else {
+                                likeImage.attr("src", "/images/heart_full.png")
+                            }
+                            likeImage.animate({ height: '+=10', width: '+=10' }).animate({ height: '-=10', width: '-=10' });
+                    },
+                    error: function (results) {
+                        console.log("error");
+                    }
+                }).done(function () {
+                }).fail(function (xhr, status, errorThrown) {
+                });
+            });
+        });
+    </script>
+    <script>
+            $(document).ready(function () {
+                $("#viewLikes").on("click", function (event) {
+                    var modal = bootbox.dialog({
+                        message: $(".viewLikesDiv").html(),
+                        title: "<h3>People who liked this project</h3>",
+                        buttons: [
+                            {
+                                label: "Close",
+                                className: "btn btn-default pull-left",
+                                callback: function () {
+                                }
+                            }
+                        ],
+                        show: false,
+                        onEscape: function () {
+                            modal.modal("hide");
+                        }
+                    });
+                    modal.modal("show");
+                    var textToPass = "@Model.Id";
+                    $.ajax({
+                        type: "GET",
+                        url: '/Project/ViewLikes',
+                        data: jQuery.param({ id: textToPass }),
+                        contentType: false,
+                        processData: false,
+                        success: function (results) {
+                            $(".bootbox-body").html(results);
+                            $(".bootbox-body .tabela").DataTable({
+                                "columns": [
+                                    { "name": "profilePicture", "orderable": false },
+                                    { "name": "userName", "orderable": false }
+                                ],
+                                "ordering": false,
+                                "bLengthChange": false,
+                                "searching": false,
+                                "pageLength": 4,
+                                "bInfo": false
+                            });
+                        },
+                        error: function (results) {
+                            console.log("error");
+                        }
+                    }).done(function () {
+                    }).fail(function (xhr, status, errorThrown) {
+                    });
+                });
+            });
+    </script>
+}

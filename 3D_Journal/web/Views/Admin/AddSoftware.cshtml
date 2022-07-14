@@ -1,0 +1,28 @@
+﻿<div class="container border border-dark rounded">
+        <h2 class="text-center mt-2">Add New Software</h2>
+    <hr/>
+        <form action="/Admin/AddSoftware" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name" class="control-label">Software name</label>
+                <br>
+                <div class="">
+                    <input required="required" type="text" name="name" id="name" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="logo" class="control-label">Software logo</label>
+                <br>
+                <div class="">
+                    <input required="required" type="file" name="logo" id="logo" class="form-control" />
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-6">
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Create</button>
+                </div>
+                <div class="col-6">
+                    <a href="/Admin" class="btn btn-primary btn-lg btn-block">Back</a>
+                </div>
+            </div>
+        </form>
+</div>

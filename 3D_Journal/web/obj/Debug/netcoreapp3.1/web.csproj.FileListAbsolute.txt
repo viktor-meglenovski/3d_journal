@@ -395,3 +395,13 @@ C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcorea
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Account\Login.cshtml.g.cs
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Account\Register.cshtml.g.cs
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Account\EditProfile.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\MyProfile\Index.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Project\Create.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Project\View.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Home\NoPermissions.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Project\Edit.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\MyProfile\View.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Project\ViewLikes.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Admin\AddSoftware.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Admin\Index.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Admin\ShowAllSoftware.cshtml.g.cs

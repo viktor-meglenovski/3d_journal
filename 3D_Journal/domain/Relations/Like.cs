@@ -6,7 +6,7 @@ using System.Text;
 
 namespace domain.Relations
 {
-    public class Like
+    public class Like:BaseEntity
     {
         public Guid ProjectId { get; set; }
         public string UserId { get; set; }

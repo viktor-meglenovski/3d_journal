@@ -1,0 +1,23 @@
+﻿@model List<domain.Identity.AppUser>
+<h4>Total Likes: @Model.Count()</h4>
+<table class="tabela" style="width:100%;" >
+    <thead>
+        <tr>
+            <th>Profile Picture</th>
+            <th>User Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td style="width:50%">
+                    <img class="smallProfilePicture" , alt="@x.UserName" src="@x.ProfileImage.ImagePath" style="width:75px;height:75px;"/>
+                </td>
+                <td>
+                    <a href=@String.Format("/MyProfile/View/"+ @x.Id)>@x.UserName</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

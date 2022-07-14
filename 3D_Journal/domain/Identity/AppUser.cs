@@ -12,7 +12,7 @@ namespace domain.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }    
-        public virtual Image ProfileImage { get; set; }
+        public virtual ProfileImage ProfileImage { get; set; }
         public Guid? ProfileImageId { get; set; }
         
         virtual public List<Project> Projects { get; set;}

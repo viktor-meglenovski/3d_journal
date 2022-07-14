@@ -31,6 +31,7 @@
     ".NETCoreApp,Version=v3.1": {
       "web/1.0.0": {
         "dependencies": {
+          "Bootbox.JS": "5.5.2",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "3.1.12",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.12",
           "Microsoft.AspNetCore.Identity.UI": "3.1.12",
@@ -38,6 +39,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.12",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.12",
           "domain": "1.0.0",
+          "jquery.datatables": "1.10.15",
           "repository": "1.0.0",
           "service": "1.0.0",
           "Microsoft.AspNetCore.Antiforgery": "3.1.0.0",
@@ -308,6 +310,17 @@
         },
         "compile": {
           "web.dll": {}
+        }
+      },
+      "Bootbox.JS/5.5.2": {
+        "dependencies": {
+          "jQuery": "1.12.4"
+        }
+      },
+      "jQuery/1.12.4": {},
+      "jquery.datatables/1.10.15": {
+        "dependencies": {
+          "jQuery": "1.12.4"
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/3.1.12": {
@@ -3276,6 +3289,27 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Bootbox.JS/5.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Uun5RlCR5a5faxEQU6PtsfrKjckTC/Eo9lmA6LnAUj3KR3s4dl13G9RTa6EgQnH4lKaYFTfWi+h0eW6XcCWnjA==",
+      "path": "bootbox.js/5.5.2",
+      "hashPath": "bootbox.js.5.5.2.nupkg.sha512"
+    },
+    "jQuery/1.12.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pIYtWlFI5PGlJVB8jm9H96pAQ27jQhA9sCxMeGweeC3ByQRaB8BwkIuGdTt4go3IEKTmmfRC2y5k0FLFizWDQg==",
+      "path": "jquery/1.12.4",
+      "hashPath": "jquery.1.12.4.nupkg.sha512"
+    },
+    "jquery.datatables/1.10.15": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9zRZ5zYafJHOwLU6sWoTM/agRx/dlu0HGQpGD/hEvqSEUJhSQjqJNTq77I97B+LCbh4eJrmNDS9PENiYY+0Isg==",
+      "path": "jquery.datatables/1.10.15",
+      "hashPath": "jquery.datatables.1.10.15.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/3.1.12": {
       "type": "package",

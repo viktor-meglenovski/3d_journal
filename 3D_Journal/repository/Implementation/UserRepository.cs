@@ -28,6 +28,9 @@ namespace repository.Implementation
         {
             return entities
                .Include(z => z.ProfileImage)
+               .Include(z=>z.Projects)
+               .Include("Projects.LikedByUsers")
+               .Include("Projects.MainImage")
                .SingleOrDefault(s => s.Id == id);
         }
         public void Insert(AppUser entity)

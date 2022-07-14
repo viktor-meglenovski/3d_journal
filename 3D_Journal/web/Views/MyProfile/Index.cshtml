@@ -1,0 +1,119 @@
+﻿@model domain.Identity.AppUser
+@using domain.DomainModels
+<div class="container-fluid border border-dark rounded col-10">
+    <div class="row mt-2 p-3">
+        <div class="col-4 text-center profileInfoContainter">
+            <div class="whiteBg roundedCorners">
+                <h2>@Model.FirstName @Model.LastName</h2>
+                <hr />
+                @if (Model.ProfileImage == null)
+                {
+                    <img src="~/images/defaultProfilePicture.png" style="width:300px;height:300px;" id="profilePictureImage" class="zoomInImages profilePicture" />
+                }
+                else
+                {
+                    <img src="@Model.ProfileImage.ImagePath" style="width:300px;height:300px;" id="profilePictureImage" class="profilePicture zoomInImages">
+                }
+
+                <hr />
+                <h2>@Model.UserName</h2>
+                <hr />
+                <div class="row">
+                    <h3 class="col-8 text-left">Total Projects:</h3>
+                    <h3 class="col-4 text-right">@Model.Projects.Count</h3>
+
+                    <h3 class="col-8 text-left">Total Likes:</h3>
+                    @{
+                        var x = 0;
+                        foreach (var p in Model.Projects)
+                        {
+                            x += p.LikedByUsers.Count;
+                        }
+                        <h3 class="col-4 text-right">@x</h3>
+                    }
+                </div>
+                <hr />
+                <a href="/Account/EditProfile" class="btn btn-primary btn-lg btn-block">Edit Profile</a>
+            </div>
+        </div>
+        <div class="col-8 profileInfoContainter">
+            <div class="whiteBg roundedCorners">
+                <h2 class="text-center">My 3D Art Projects</h2>
+                <hr />
+                @if (Model.Projects.Count == 0)
+                {
+                    <h3 class="text-center text-danger">No projects available :(</h3>
+                    <hr />
+                }
+                else
+                {
+                    <div class="roundedCorners" style="margin-bottom:15px;">
+                        <table id="dataTable" class="row-border">
+                            <thead>
+                                <tr style="border-bottom:1px solid black" ; width:100%;>
+                                    <th style="width:15%">Name</th>
+                                    <th style="width:25%">Preview</th>
+                                    <th style="width:10%">Price</th>
+                                    <th style="width:15%">Likes</th>
+                                    <th style="width:25%"></th>
+                                    <th style="width:20%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Project p in @Model.Projects)
+                                {
+                                    <tr style="border-bottom:1px solid black">
+                                        <td>@p.Name</td>
+                                        <td><img class="otherImagesWithRatio zoomInImages" alt=@p.Name src=@p.MainImage.ImagePath style="border:1px solid #d3d3d3; border-radius:10%; width:100px; height:100px;" /></td>
+                                        <td>$@p.Price</td>
+                                        <td>@p.LikedByUsers.Count</td>
+                                        <td><a href="/Project/View/@p.Id" class="btn btn-success btn-size">View details</a></td>
+                                        <td><a href="/Project/Edit/@p.Id" class="btn btn-warning text-white btn-size btn-block mb-2">Edit</a> <a imgUrl="@p.MainImage.ImagePath" projectName="@p.Name" path="/Project/Delete/@p.Id" class="btn btn-danger btn-size deleteButton text-white btn-block">Delete</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                <a href="/Project/Create" class="btn btn-success btn-lg btn-block">Add a new Project</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".deleteButton").click(function () {
+                var link = $(this);
+                bootbox.confirm({
+                    title: "<h4 class='text-center'>Are you sure that you want to delete the following project?</h4>",
+                    message: "<span><h3 style='display:inline-block;' class='text-center'>" + link.attr('projectName') + "</h3> <img style='display:inline-block; width:100%;' class='otherImagesWithRatio thumbnail' src=" + link.attr('imgUrl') + " /></span>",
+                    callback: function (result) {
+                        if (result) {
+                            window.location.href = link.attr('path');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#dataTable").DataTable({
+                "columns": [
+                    { "name": "name", "orderable": true },
+                    { "name": "preview", "orderable": false },
+                    { "name": "price", "orderable": true },
+                    { "name": "likes", "orderable": true },
+                    { "name": "detailsBtn", "orderable": false },
+                    { "name": "editDeleteBtn", "orderable": false }
+                ],
+                "bLengthChange": false,
+                "searching": false,
+                "pageLength": 4,
+                "bInfo": false
+            });
+        });
+    </script>
+ 
+}

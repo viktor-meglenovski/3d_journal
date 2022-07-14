@@ -15,21 +15,23 @@ using System.Threading.Tasks;
 
 namespace web.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
         private readonly IUserRepository userRepository;
-        private readonly IRepository<Image> imageRepository;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IUserRepository userRepository, IRepository<Image> imageRepository)
+        private readonly IRepository<ProfileImage> profileImageRepository;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IUserRepository userRepository, IRepository<ProfileImage> profileImageRepository)
         {
 
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.userRepository = userRepository;
-            this.imageRepository = imageRepository;
+            this.profileImageRepository = profileImageRepository;
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             UserRegistrationDto model = new UserRegistrationDto();
@@ -117,7 +119,10 @@ namespace web.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddClaimAsync(user, new Claim("UserRole", "Admin"));
-                    return RedirectToAction("Index", "Home");
+                    Directory.CreateDirectory($".\\wwwroot\\userUploads\\{user.Id}");
+                    if(user.Role=="User")
+                        return RedirectToAction("Index", "MyProfile");
+                    return RedirectToAction("Index", "Admin");
                 }
                 else
                 {
@@ -148,15 +153,15 @@ namespace web.Controllers
             var user = userRepository.Get(userId);
             if (profilePicture != null)
             {
-                string imagePath = saveImage(profilePicture);
-                Image image = imageRepository.Insert(new Image { ImagePath = imagePath });
-                user.ProfileImageId = image.Id;
-                user.ProfileImage = image;
+                string imagePath = saveProfileImage(profilePicture,userId);
+                ProfileImage profileImage = profileImageRepository.Insert(new ProfileImage { ImagePath = imagePath, AppUser=user });
+                user.ProfileImageId = profileImage.Id;
+                user.ProfileImage = profileImage;
             }
             user.FirstName = firstName;
             user.LastName = lastName;
             userRepository.Update(user);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "MyProfile");
 
         }
         [HttpPost]
@@ -174,6 +179,17 @@ namespace web.Controllers
                 fileStream.Flush();
             }
             var newPath = "/temp/" + file.FileName;
+            return newPath;
+        }
+        public string saveProfileImage(IFormFile file, string userId)
+        {
+            string pathToUpload = $".\\wwwroot\\userUploads\\{userId}\\{file.FileName}";
+            using (FileStream fileStream = System.IO.File.Create(pathToUpload))
+            {
+                file.CopyTo(fileStream);
+                fileStream.Flush();
+            }
+            var newPath = "/userUploads/"+userId+"/" + file.FileName;
             return newPath;
         }
     }
