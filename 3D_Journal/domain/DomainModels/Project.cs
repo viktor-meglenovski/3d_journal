@@ -21,6 +21,7 @@ namespace domain.DomainModels
         virtual public UploadedFile UploadedFile { get; set; }
         public Guid? UploadedFileId { get; set; }
         public int Price { get; set; }
+        virtual public List<Purchase> PurchasedBy { get; set; }
         
     }
 }

@@ -1,0 +1,138 @@
+﻿@using domain.Identity
+@using domain.DomainModels
+<style>
+    .profile-image {
+        height: 320px;
+    }
+
+    .project-image {
+        height: 100px;
+    }
+</style>
+
+<div class="container-fluid border rounded mt-2">
+    <h1 class="text-center mt-2">Search results for: @ViewBag.SearchText</h1>
+    <hr />
+    <div class="row mt-2 pb-3">
+        <div class="col-6">
+            <h1 class="text-center">Users</h1>
+            @if (ViewBag.Users.Count == 0)
+            {
+                <hr class="mt-1" />
+                <h3 class="text-center mt-2">No results found :(</h3>
+            }
+            else
+            {
+                <table class="table" id="user-table">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="align-middle">Username</th>
+                            <th class="align-middle">Image</th>
+                            <th class="align-middle">Full name</th>
+                            <th class="align-middle"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody-helper">
+                        @foreach (AppUser u in ViewBag.Users)
+                        {
+                            <tr class="text-center">
+                                <td class="align-middle">@u.UserName</td>
+                                <td class="align-middle">
+                                    @if (u.ProfileImage == null)
+                                    {
+                                        <img src="~/images/defaultProfilePicture.png" class="project-image border rounded zoomInImages" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@u.ProfileImage.ImagePath" class="project-image border rounded zoomInImages">
+                                    }
+                                </td>
+                                <td class="align-middle">@u.FirstName @u.LastName</td>
+                                <td class="align-middle"><a class="btn btn-primary btn-block" href="/MyProfile/View/@u.Id">View</a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="col-6">
+            <h1 class="text-center">Projects</h1>
+            @if (ViewBag.Projects.Count == 0)
+            {
+                <hr class="mt-1" />
+                <h3 class="text-center mt-2">No results found :(</h3>
+            }
+            else
+            {
+                <table class="table" id="project-table">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="align-middle">Name</th>
+                            <th class="align-middle">Image</th>
+                            <th class="align-middle">Author</th>
+                            <th class="align-middle"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody-helper">
+                        @foreach (Project p in ViewBag.Projects)
+                        {
+                            <tr class="text-center">
+                                <td class="align-middle">@p.Name</td>
+                                <td class="align-middle"><img class="project-image border rounded zoomInImages" src="@p.MainImage.ImagePath" /></td>
+                                <td class="align-middle"><a href="/MyProfile/View/@p.Creator.Id">@p.Creator.UserName</a></td>
+                                <td class="align-middle"><a class="btn btn-primary btn-block" href="/Project/View/@p.Id">View</a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $("#user-table").DataTable({
+            "columns": [
+                { "name": "username", "orderable": false },
+                { "name": "image", "orderable": false },
+                { "name": "fullname", "orderable": false },
+                { "name": "options", "orderable": false }
+            ],
+            "ordering": false,
+            "bLengthChange": false,
+            "searching": false,
+            "pageLength": 4,
+            "bInfo": false,
+            "language": {
+                "paginate": {
+                    "previous": "<<",
+                    "next": ">>"
+                }
+            }
+        });
+        $("#user-table_paginate").addClass(["text-center", "col-12"]);
+    </script>
+    <script>
+        $("#project-table").DataTable({
+            "columns": [
+                { "name": "name", "orderable": false },
+                { "name": "image", "orderable": false },
+                { "name": "author", "orderable": false },
+                { "name": "options", "orderable": false }
+            ],
+            "ordering": false,
+            "bLengthChange": false,
+            "searching": false,
+            "pageLength": 4,
+            "bInfo": false,
+            "language": {
+                "paginate": {
+                    "previous": "<<",
+                    "next": ">>"
+                }
+            }
+        });
+        $("#project-table_paginate").addClass(["text-center", "col-12"]);
+    </script>}

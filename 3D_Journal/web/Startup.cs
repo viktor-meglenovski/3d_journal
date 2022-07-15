@@ -1,3 +1,4 @@
+using domain;
 using domain.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +12,10 @@ using Microsoft.Extensions.Hosting;
 using repository;
 using repository.Implementation;
 using repository.Interface;
+using service;
+using service.Implementation;
 using service.Interface;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +25,12 @@ namespace web
 {
     public class Startup
     {
+        private EmailSettings emailSettings;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            emailSettings = new EmailSettings();
+            Configuration.GetSection("EmailSettings").Bind(emailSettings);
         }
 
         public IConfiguration Configuration { get; }
@@ -46,6 +53,12 @@ namespace web
             services.AddScoped(typeof(IProjectRepository), typeof(ProjectRepository));
 
             services.AddTransient<IProjectService, service.Implementation.ProjectService>();
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+
+            services.AddScoped<EmailSettings>(es => emailSettings);
+            services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailSettings));
+            services.AddScoped<IBackgroundEmailSender, BackgroundEmailSender>();
+            services.AddHostedService<EmailScopedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +90,7 @@ namespace web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
         }
     }
 }

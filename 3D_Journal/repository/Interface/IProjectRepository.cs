@@ -10,5 +10,6 @@ namespace repository.Interface
     {
         Project GetProjectWithDetails(Guid id);
         Project UpdateProject(string title, string description, string mainImage, List<ProjectSoftware> softwaresUsed);
+        List<Project> GetAllProjectWithDetails();
     }
 }

@@ -2,6 +2,8 @@
 @using domain.DomainModels
 @using domain.Relations
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
+@inject IOptions<domain.StripeSettings> Stripe
 <div class="container border border-dark rounded col-6">
     <div>
         <div class="text-center mt-1">
@@ -10,14 +12,40 @@
             <hr />
         </div>
         <div class="row">
-            <div class="col-6 text-center">
+            <div class="col-4 text-center">
                 <img class="thumbnail zoomInImages" style="width:200px; height:200px;" alt="Main image" src="@Model.MainImage.ImagePath" />
             </div>
-            <div class="col-6">
+            <div class="col-8">
                 <h5>Description:</h5>
                 <p>@Model.Description</p>
-                <hr/>
+                <hr />
                 <h5>Price: $@Model.Price</h5>
+                @if (Model.CreatorId != ViewBag.UserId)
+                {
+                    @if (Model.PurchasedBy.Select(x => x.UserId).ToList().Contains(ViewBag.UserId))
+                    {
+                        <h5>You have already purchased this project!</h5>
+                        <a href="/Project/DownloadFiles/@Model.Id" class="btn btn-info btn-block btn-lg">Download files here!</a>
+                    }
+                    else
+                    {
+                        <form action="/Project/Payorder" method="post">
+                            <input type="hidden" value="@Model.Id" name="projectId" id="projectId"/>
+                            <article>
+                                <script src="https://checkout.stripe.com/checkout.js"
+                                        class="stripe-button"
+                                        data-key="@Stripe.Value.PublishableKey"
+                                        data-locale="auto"
+                                        data-description="EShop Application Payment"
+                                        data-amount="@(Model.Price * 100)"
+                                        data-label="Pay $@Model.Price">
+                                </script>
+                            </article>
+                        </form>
+                    }
+                }
+
+
             </div>
         </div>
         <hr />
@@ -47,7 +75,7 @@
             </div>
             <div class="col-3 text-right">
                 <a id="viewLikes" class="btn btn-danger text-center text-white">Likes: @Model.LikedByUsers.Count </a>
-                @{ 
+                @{
                     var likedBy = Model.LikedByUsers.Select(x => x.UserId).ToList();
                 }
                 @{ var likeImg = likedBy.Contains(ViewBag.UserId) ? "/images/heart_full.png" : "/images/heart_empty.png";}

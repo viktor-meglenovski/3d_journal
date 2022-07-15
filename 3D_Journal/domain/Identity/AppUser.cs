@@ -17,5 +17,6 @@ namespace domain.Identity
         
         virtual public List<Project> Projects { get; set;}
         virtual public List<Like> LikedProjects { get; set; }
+        virtual public List<Purchase> PurchasedProjects { get; set; }
     }
 }

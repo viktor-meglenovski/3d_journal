@@ -31,6 +31,9 @@ namespace repository.Implementation
                .Include(z=>z.Projects)
                .Include("Projects.LikedByUsers")
                .Include("Projects.MainImage")
+               .Include("Projects.PurchasedBy")
+               .Include(z=>z.PurchasedProjects)
+               .Include("PurchasedProjects.Project")
                .SingleOrDefault(s => s.Id == id);
         }
         public void Insert(AppUser entity)
@@ -61,6 +64,14 @@ namespace repository.Implementation
             }
             entities.Remove(entity);
             context.SaveChanges();
+        }
+
+        public List<AppUser> search(string text)
+        {
+            return entities
+              .Include(z => z.ProfileImage)
+              .Where(x => x.Email.Contains(text) || x.FirstName.Contains(text) || x.LastName.Contains(text))
+              .ToListAsync().Result;
         }
     }
 }

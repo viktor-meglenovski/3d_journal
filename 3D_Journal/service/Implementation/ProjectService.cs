@@ -14,11 +14,13 @@ namespace service.Implementation
         private readonly ISoftwareRepository softwareRepository;
         private readonly IRepository<Project> projectRepository;
         private readonly IProjectRepository projectRepositoryAdvanced;
-        public ProjectService(ISoftwareRepository softwareRepository, IRepository<Project> projectRepository, IProjectRepository projectRepositoryAdvanced)
+        private readonly IRepository<Purchase> purchaseRepository;
+        public ProjectService(ISoftwareRepository softwareRepository, IRepository<Project> projectRepository, IProjectRepository projectRepositoryAdvanced, IRepository<Purchase> purchaseRepository)
         {
             this.softwareRepository = softwareRepository;
             this.projectRepository = projectRepository;
             this.projectRepositoryAdvanced = projectRepositoryAdvanced;
+            this.purchaseRepository = purchaseRepository;
         }
         public Project CreateNewProject(AppUser creator, string name, string description, int price, List<Guid> softwaresUsed, string mainImage, List<string> otherImages, string filePath)
         {
@@ -81,6 +83,32 @@ namespace service.Implementation
         public Project Get(Guid id)
         {
             return projectRepositoryAdvanced.GetProjectWithDetails(id);
+        }
+
+        public List<Project> GetAllProjectWithDetails()
+        {
+            return projectRepositoryAdvanced.GetAllProjectWithDetails();
+        }
+
+        public bool Order(AppUser user, Guid projectId)
+        {
+            var project = Get(projectId);
+            var newPurchase = new Purchase { User = user, UserId = user.Id, Project = project, ProjectId = project.Id };
+            purchaseRepository.Insert(newPurchase);
+            return true;
+        }
+
+        public List<Project> Search(string text)
+        {
+            List<Project> result = new List<Project>();
+            foreach(Project p in GetAllProjectWithDetails())
+            {
+                if(p.Name.Contains(text) || p.Description.Contains(text))
+                {
+                    result.Add(p);
+                }
+            }
+            return result;
         }
     }
 }

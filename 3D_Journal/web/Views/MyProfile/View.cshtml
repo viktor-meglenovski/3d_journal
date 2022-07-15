@@ -31,7 +31,17 @@
                         }
                         <h3 class="col-4 text-right">@x</h3>
                     }
+                    <h3 class="col-8 text-left">Total Income:</h3>
+                    @{
+                        var y = 0;
+                        foreach (var p in Model.Projects)
+                        {
+                            y += p.Price * p.PurchasedBy.Count;
+                        }
+                        <h3 class="col-4 text-right">$@y</h3>
+                    }
                 </div>
+
             </div>
         </div>
         <div class="col-8 profileInfoContainter">
@@ -50,22 +60,22 @@
                             <thead>
                                 <tr style="border-bottom:1px solid black" ; width:100%;>
                                     <th style="width:15%">Name</th>
-                                    <th style="width:20%">Preview</th>
+                                    <th style="width:25%">Preview</th>
                                     <th style="width:10%">Price</th>
                                     <th style="width:15%">Likes</th>
                                     <th style="width:25%"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (Project p in Model.Projects)
+                                @foreach (Project p in @Model.Projects)
                                 {
-                                <tr style="border-bottom:1px solid black">
-                                    <td>@p.Name</td>
-                                    <td><img class="otherImagesWithRatio zoomInImages" alt=@p.Name src=@p.MainImage.ImagePath style="border:1px solid #d3d3d3; border-radius:10%; width:100px; height:100px;" /></td>
-                                    <td>$@p.Price</td>
-                                    <td>@p.LikedByUsers.Count</td>
-                                    <td><a href="/Project/View/@p.Id" class="btn btn-success btn-size">View details</a></td>
-                                </tr>
+                                    <tr style="border-bottom:1px solid black">
+                                        <td>@p.Name</td>
+                                        <td><img class="otherImagesWithRatio zoomInImages" alt=@p.Name src=@p.MainImage.ImagePath style="border:1px solid #d3d3d3; border-radius:10%; width:100px; height:100px;" /></td>
+                                        <td>$@p.Price</td>
+                                        <td>@p.LikedByUsers.Count</td>
+                                        <td><a href="/Project/View/@p.Id" class="btn btn-success btn-size">View details</a></td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -85,7 +95,6 @@
                     { "name": "price", "orderable": true },
                     { "name": "likes", "orderable": true },
                     { "name": "detailsBtn", "orderable": false },
-                    { "name": "editDeleteBtn", "orderable": false }
                 ],
                 "bLengthChange": false,
                 "searching": false,

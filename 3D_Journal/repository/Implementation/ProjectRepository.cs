@@ -30,7 +30,26 @@ namespace repository.Implementation
                 .Include("SoftwaresUsed.Software")
                 .Include("SoftwaresUsed.Software.Logo")
                 .Include(x=>x.UploadedFile)
+                .Include(x=>x.PurchasedBy)
+                .Include("PurchasedBy.User")
                 .SingleOrDefaultAsync(x=>x.Id==id).Result;
+        }
+
+        public List<Project> GetAllProjectWithDetails()
+        {
+            return entities
+                .Include(x => x.Creator)
+                .Include("Creator.ProfileImage")
+                .Include(x => x.LikedByUsers)
+                .Include(x => x.MainImage)
+                .Include(x => x.OtherImages)
+                .Include(x => x.SoftwaresUsed)
+                .Include("SoftwaresUsed.Software")
+                .Include("SoftwaresUsed.Software.Logo")
+                .Include(x => x.UploadedFile)
+                .Include(x => x.PurchasedBy)
+                .Include("PurchasedBy.User")
+                .ToListAsync().Result;
         }
 
         public Project UpdateProject(string title, string description, string mainImage, List<ProjectSoftware> softwaresUsed)

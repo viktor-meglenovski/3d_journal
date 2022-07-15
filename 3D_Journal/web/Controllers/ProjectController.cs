@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using repository.Interface;
 using service.Interface;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,7 +26,8 @@ namespace web.Controllers
         private readonly IRepository<ProjectImage> projectImageRepository;
         private readonly IRepository<UploadedFile> uploadedFileRepository;
         private readonly IRepository<Like> likeRepository;
-        public ProjectController(ISoftwareRepository softwareRepository, IProjectService projectService, IUserRepository userRepository, IRepository<OtherProjectImage> otherProjectImageRepository, IRepository<ProjectImage> projectImageRepository, IRepository<UploadedFile> uploadedFileRepository, IRepository<Like> likeRepository)
+        private readonly IRepository<EmailMessage> mailRepository;
+        public ProjectController(ISoftwareRepository softwareRepository, IProjectService projectService, IUserRepository userRepository, IRepository<OtherProjectImage> otherProjectImageRepository, IRepository<ProjectImage> projectImageRepository, IRepository<UploadedFile> uploadedFileRepository, IRepository<Like> likeRepository, IRepository<EmailMessage> mailRepository)
         {
             this.softwareRepository = softwareRepository;
             this.projectService = projectService;
@@ -34,6 +36,7 @@ namespace web.Controllers
             this.projectImageRepository = projectImageRepository;
             this.uploadedFileRepository = uploadedFileRepository;
             this.likeRepository = likeRepository;
+            this.mailRepository = mailRepository;
         }
         [HttpGet]
         public IActionResult Create()
@@ -188,6 +191,57 @@ namespace web.Controllers
                 return PartialView(project.LikedByUsers.Select(x=>x.User).ToList());
             }
             return new NotFoundResult();
+        }
+        [HttpPost]
+        public IActionResult Payorder(string stripeEmail, string stripeToken, Guid projectId)
+        {
+
+            var project = projectService.Get(projectId);
+            var customerService = new CustomerService();
+            var chargeService = new ChargeService();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            var customer = customerService.Create(new CustomerCreateOptions
+            {
+                Email = stripeEmail,
+                Source = stripeToken
+            });
+
+            var charge = chargeService.Create(new ChargeCreateOptions
+            {
+                Amount = (Convert.ToInt32(project.Price) * 100),
+                Description = "3D Journal Purchase",
+                Currency = "usd",
+                Customer = customer.Id
+            });
+
+            if (charge.Status == "succeeded")
+            {
+                var result = this.Order(projectId, userId);
+            }
+
+            return RedirectToAction("View", "Project", new { id=projectId});
+        }
+        public Boolean Order(Guid projectId, string userId)
+        {
+            var user = userRepository.Get(userId);
+            var project = projectService.Get(projectId);
+            EmailMessage message = new EmailMessage();
+            message.MailTo = user.Email;
+            message.Subject = "3D Journal - Successfully created order";
+            message.Status = false;
+            message.Content = "You have successfully bought "+project.Name+" from "+project.Creator.UserName+" for $"+project.Price;
+            this.mailRepository.Insert(message);
+            var result = projectService.Order(user, projectId);
+
+            return result;
+        }
+        public IActionResult DownloadFiles(Guid id)
+        {
+            var project = projectService.Get(id);
+            byte[] fileBytes = System.IO.File.ReadAllBytes($".\\wwwroot\\{project.UploadedFile.Path}");
+            return File(fileBytes, "application/force-download", project.UploadedFile.Path);
         }
     }
 }

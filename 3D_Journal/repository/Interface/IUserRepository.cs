@@ -12,5 +12,6 @@ namespace repository.Interface
         void Insert(AppUser entity);
         void Update(AppUser entity);
         void Delete(AppUser entity);
+        List<AppUser> search(string text);
     }
 }

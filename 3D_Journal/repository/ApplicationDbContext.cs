@@ -23,6 +23,8 @@ namespace repository
         public virtual DbSet<ProjectSoftware> ProjectSoftwares { get; set; }
         public virtual DbSet<Like> Likes { get; set; }
         public virtual DbSet<UploadedFile> UploadedFiles { get; set; }
+        public virtual DbSet<Purchase> Purchases { get; set; }
+        public virtual DbSet<EmailMessage> EmailMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -53,6 +55,14 @@ namespace repository
                 .ValueGeneratedOnAdd();
 
             builder.Entity<UploadedFile>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<Purchase>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<EmailMessage>()
                 .Property(x => x.Id)
                 .ValueGeneratedOnAdd();
 
@@ -96,6 +106,17 @@ namespace repository
             builder.Entity<Like>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.LikedProjects)
+                .HasForeignKey(x => x.UserId);
+
+            //Project-AppUser (Purchases) M-N
+            builder.Entity<Purchase>()
+                .HasOne(x => x.Project)
+                .WithMany(x => x.PurchasedBy)
+                .HasForeignKey(x => x.ProjectId);
+
+            builder.Entity<Purchase>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.PurchasedProjects)
                 .HasForeignKey(x => x.UserId);
 
             //Project-MainImage 1-1

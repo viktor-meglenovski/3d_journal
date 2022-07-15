@@ -1,5 +1,6 @@
 ﻿@model domain.Identity.AppUser
 @using domain.DomainModels
+@using domain.Relations 
 <div class="container-fluid border border-dark rounded col-10">
     <div class="row mt-2 p-3">
         <div class="col-4 text-center profileInfoContainter">
@@ -30,6 +31,15 @@
                             x += p.LikedByUsers.Count;
                         }
                         <h3 class="col-4 text-right">@x</h3>
+                    }
+                    <h3 class="col-8 text-left">Total Income:</h3>
+                    @{
+                        var y = 0;
+                        foreach (var p in Model.Projects)
+                        {
+                            y += p.Price*p.PurchasedBy.Count;
+                        }
+                        <h3 class="col-4 text-right">$@y</h3>
                     }
                 </div>
                 <hr />
@@ -114,6 +124,7 @@
                 "bInfo": false
             });
         });
+        $(".dataTables_paginate").addClass(["text-center", "col-12"]);
     </script>
  
 }
