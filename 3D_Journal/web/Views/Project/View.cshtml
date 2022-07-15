@@ -16,6 +16,8 @@
                 <img class="thumbnail zoomInImages" style="width:200px; height:200px;" alt="Main image" src="@Model.MainImage.ImagePath" />
             </div>
             <div class="col-8">
+                <h5>Creator:</h5>
+                <p><a href="/MyProfile/View/@Model.CreatorId">@Model.Creator.UserName</a></p>
                 <h5>Description:</h5>
                 <p>@Model.Description</p>
                 <hr />

@@ -188,7 +188,12 @@ namespace web.Controllers
             var project = projectService.Get(id);
             if (project != null)
             {
-                return PartialView(project.LikedByUsers.Select(x=>x.User).ToList());
+                var model = new List<AppUser>();
+                foreach(string uid in project.LikedByUsers.Select(x => x.UserId))
+                {
+                    model.Add(userRepository.Get(uid));
+                }
+                return PartialView(model);
             }
             return new NotFoundResult();
         }

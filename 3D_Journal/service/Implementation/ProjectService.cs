@@ -1,10 +1,12 @@
 ﻿using domain.DomainModels;
+using domain.DTO;
 using domain.Identity;
 using domain.Relations;
 using repository.Interface;
 using service.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace service.Implementation
@@ -15,12 +17,14 @@ namespace service.Implementation
         private readonly IRepository<Project> projectRepository;
         private readonly IProjectRepository projectRepositoryAdvanced;
         private readonly IRepository<Purchase> purchaseRepository;
-        public ProjectService(ISoftwareRepository softwareRepository, IRepository<Project> projectRepository, IProjectRepository projectRepositoryAdvanced, IRepository<Purchase> purchaseRepository)
+        private readonly IRepository<ProjectSoftware> projectSoftwareRepository;
+        public ProjectService(ISoftwareRepository softwareRepository, IRepository<Project> projectRepository, IProjectRepository projectRepositoryAdvanced, IRepository<Purchase> purchaseRepository, IRepository<ProjectSoftware> projectSoftwareRepository)
         {
             this.softwareRepository = softwareRepository;
             this.projectRepository = projectRepository;
             this.projectRepositoryAdvanced = projectRepositoryAdvanced;
             this.purchaseRepository = purchaseRepository;
+            this.projectSoftwareRepository = projectSoftwareRepository;
         }
         public Project CreateNewProject(AppUser creator, string name, string description, int price, List<Guid> softwaresUsed, string mainImage, List<string> otherImages, string filePath)
         {
@@ -88,6 +92,26 @@ namespace service.Implementation
         public List<Project> GetAllProjectWithDetails()
         {
             return projectRepositoryAdvanced.GetAllProjectWithDetails();
+        }
+
+        public List<ProjectDTO> getProjectsBySoftware(Guid? softwareId)
+        {
+            List<ProjectDTO> result = new List<ProjectDTO>();
+            if (softwareId == null)
+            {
+                foreach (Project p in GetAllProjectWithDetails())
+                {
+                    result.Add(new ProjectDTO { Name = p.Name, Id = p.Id, Description = p.Description, TimeStamp = p.TimeStamp });
+                }
+                return result;
+            }
+            List<Guid> projectIds = projectSoftwareRepository.GetAll().Where(x => x.SoftwareId == softwareId).Select(x => x.ProjectId).ToList();
+            foreach(Guid id in projectIds)
+            {
+                var temp = Get(id);
+                result.Add(new ProjectDTO { Name = temp.Name, Id = temp.Id, Description = temp.Description, TimeStamp = temp.TimeStamp });
+            }
+            return result;
         }
 
         public bool Order(AppUser user, Guid projectId)

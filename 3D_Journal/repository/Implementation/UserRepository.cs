@@ -21,7 +21,15 @@ namespace repository.Implementation
         }
         public IEnumerable<AppUser> GetAll()
         {
-            return entities.AsEnumerable();
+            return entities
+                .Include(z => z.ProfileImage)
+                .Include(z => z.Projects)
+                .Include("Projects.LikedByUsers")
+                .Include("Projects.MainImage")
+                .Include("Projects.PurchasedBy")
+                .Include(z => z.PurchasedProjects)
+                .Include("PurchasedProjects.Project")
+                .AsEnumerable();
         }
 
         public AppUser Get(string id)

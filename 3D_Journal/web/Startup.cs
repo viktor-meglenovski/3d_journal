@@ -2,9 +2,6 @@ using domain;
 using domain.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,10 +13,6 @@ using service;
 using service.Implementation;
 using service.Interface;
 using Stripe;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace web
 {
@@ -59,6 +52,10 @@ namespace web
             services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailSettings));
             services.AddScoped<IBackgroundEmailSender, BackgroundEmailSender>();
             services.AddHostedService<EmailScopedHostedService>();
+
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

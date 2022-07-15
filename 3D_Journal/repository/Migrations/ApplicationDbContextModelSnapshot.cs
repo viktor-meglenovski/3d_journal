@@ -424,6 +424,9 @@ namespace repository.Migrations
                     b.Property<Guid>("SoftwareId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ProjectId", "SoftwareId");
 
                     b.HasIndex("SoftwareId");

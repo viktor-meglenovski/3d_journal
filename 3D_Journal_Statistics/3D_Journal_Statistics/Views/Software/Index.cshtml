@@ -1,0 +1,32 @@
+﻿@model List<Software>
+<div class="container border border-dark rounded col-6 mt-5">
+    <h1 class="text-center mt-2">Filter projects by software</h1>
+    <hr/>
+    <form action="/Software/Filter" method="get">
+        <div class="form-group">
+            <label for="software" class="control-label">Select software</label>
+            <br>
+            <div class="">
+                <select type="file" name="software" id="software" class="form-control">
+                    <option value="">--Select a software--</option>
+                    @foreach (Software s in Model)
+                    {
+                        <option value="@s.Id">@s.Name</option>
+                    }
+                </select>
+            </div>
+            <hr/>
+            <button type="submit" class="btn btn-success btn-lg btn-block">Filter and Export to Excel</button>
+        </div>
+    </form>
+</div>
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" type="text/css" />
+    <script>
+        $(document).ready(function () {
+            $('#software').multiselect();
+        });
+    </script>
+}

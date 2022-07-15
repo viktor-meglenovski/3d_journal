@@ -410,3 +410,6 @@ C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcorea
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcoreapp3.1\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\obj\Debug\netcoreapp3.1\Razor\Views\Home\Search.cshtml.g.cs
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Viktor Meglenovski\Desktop\3D_Journal\3D_Journal\web\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll

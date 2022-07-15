@@ -5,7 +5,7 @@ using System.Text;
 
 namespace domain.Relations
 {
-    public class ProjectSoftware
+    public class ProjectSoftware:BaseEntity
     {
         public Guid ProjectId { get; set; }
         public Guid SoftwareId { get; set; }

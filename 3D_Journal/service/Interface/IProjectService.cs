@@ -1,4 +1,5 @@
 ﻿using domain.DomainModels;
+using domain.DTO;
 using domain.Identity;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace service.Interface
         Boolean Order(AppUser user, Guid projectId);
         List<Project> Search(string text);
         List<Project> GetAllProjectWithDetails();
+        List<ProjectDTO> getProjectsBySoftware(Guid? softwareId);
     }
 }
